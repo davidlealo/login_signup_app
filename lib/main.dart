@@ -13,9 +13,26 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Login Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.grey[200],
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.deepPurple),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.deepPurple,
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+            textStyle: TextStyle(fontSize: 16),
+          ),
+        ),
       ),
-      home: const AuthScreen(), // Cambia la pantalla inicial a AuthScreen
+      home: const AuthScreen(),
     );
   }
 }
@@ -30,13 +47,8 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
-  // Lista de usuarios simulada para prueba
-  final List<Map<String, String>> _users = [
-    {"email": "test@example.com", "password": "1234"}
-  ];
-
-  bool _isSignUp = false; // Alternar entre Login y Signup
+  final List<Map<String, String>> _users = [{"email": "test@example.com", "password": "1234"}];
+  bool _isSignUp = false;
 
   void _toggleSignUp() {
     setState(() {
@@ -49,7 +61,6 @@ class _AuthScreenState extends State<AuthScreen> {
     final password = _passwordController.text;
 
     if (_isSignUp) {
-      // Lógica para registro
       bool userExists = _users.any((user) => user['email'] == email);
       if (userExists) {
         _showMessage("El usuario ya existe");
@@ -59,7 +70,6 @@ class _AuthScreenState extends State<AuthScreen> {
         _toggleSignUp();
       }
     } else {
-      // Lógica para inicio de sesión
       bool validUser = _users.any((user) =>
           user['email'] == email && user['password'] == password);
       if (validUser) {
@@ -82,32 +92,45 @@ class _AuthScreenState extends State<AuthScreen> {
       appBar: AppBar(
         title: Text(_isSignUp ? 'Sign Up' : 'Login'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _authenticate,
-              child: Text(_isSignUp ? 'Sign Up' : 'Login'),
-            ),
-            TextButton(
-              onPressed: _toggleSignUp,
-              child: Text(_isSignUp
-                  ? '¿Ya tienes una cuenta? Inicia sesión'
-                  : '¿No tienes cuenta? Regístrate'),
-            ),
-          ],
+      body: Center(
+        child: Container(
+          padding: EdgeInsets.all(20),
+          margin: EdgeInsets.symmetric(horizontal: 20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.3),
+                spreadRadius: 5,
+                blurRadius: 10,
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _emailController,
+                decoration: InputDecoration(labelText: 'Email'),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: _passwordController,
+                decoration: InputDecoration(labelText: 'Password'),
+                obscureText: true,
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _authenticate,
+                child: Text(_isSignUp ? 'Sign Up' : 'Login'),
+              ),
+              TextButton(
+                onPressed: _toggleSignUp,
+                child: Text(_isSignUp ? 'Already have an account? Login' : 'Don\'t have an account? Sign Up'),
+              ),
+            ],
+          ),
         ),
       ),
     );
